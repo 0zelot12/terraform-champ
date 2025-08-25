@@ -11,7 +11,7 @@ def cleanup_plan(path):
         os.remove(path)
         print(f"Deleted temporary plan file: {path}")
 
-def terraform_plan():
+def generate_plan():
     with tempfile.NamedTemporaryFile(suffix=".tfplan", delete=False) as tmp:
         plan_path = tmp.name
     try:
@@ -31,7 +31,7 @@ def get_user_selection(choices):
         choices=choices
     ).ask()
     
-    print("\nYou selected:")
+    print("\n Running terraform apply targeting the following resources:")
     for item in selected:
         print(f"- {item}")
 
@@ -42,9 +42,9 @@ def contains_resource_change_actions(actions):
     return any(action in actions for action in ["create", "update", "delete"])
 
 
-def parse_plan(plan):
+def load_changed_resources(plan_path):
     result = subprocess.run(
-        ["terraform", "show", "-json", plan],
+        ["terraform", "show", "-json", plan_path],
         capture_output=True,
         text=True,
         check=True
@@ -68,12 +68,12 @@ def build_apply_command(resources):
 
 
 def main():
-    plan = terraform_plan()
-    resources = parse_plan(plan)
-    selected_resources = get_user_selection(resources)
+    plan_path = generate_plan()
+    changed_resources = load_changed_resources(plan_path)
+    selected_resources = get_user_selection(changed_resources)
     apply_command = build_apply_command(selected_resources)
     subprocess.run(apply_command, cwd=os.getcwd(), check=True)
-    cleanup_plan(plan)
+    cleanup_plan(plan_path)
 
 
 if __name__ == "__main__":
