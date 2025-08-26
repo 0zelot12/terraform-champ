@@ -58,13 +58,7 @@ def apply_with_targets():
 
 def main():
     """
-    Main execution function.
-    - Parses command line arguments
-    - Generates a Terraform plan
-    - Loads changed resources from the plan
-    - Prompts the user to select which resources to apply
-    - Executes `terraform apply` on the selected resources
-    - Cleans up the temporary plan file
+    Main function to handle the script's workflow.
     """
     args = parse_arguments()
 
