@@ -106,11 +106,20 @@ def parse_arguments():
     """
     parser = argparse.ArgumentParser(description="Interactive Terraform apply with resource selection")
     parser.add_argument(
-        "--replace", 
-        action="store_true", 
-        help="Add -replace flags to force replacement of selected resources"
+        "mode", 
+        choices=["target", "replace"],
+        help="Mode: 'target' for selective resource targeting, 'replace' for replace command"
     )
     return parser.parse_args()
+
+def apply_with_targets():
+    plan_path = generate_plan()
+    changed_resources = load_changed_resources(plan_path)
+    selected_resources = get_user_selection(changed_resources)
+    apply_command = build_apply_command(selected_resources)
+    subprocess.run(apply_command, cwd=os.getcwd(), check=True)
+    cleanup_plan(plan_path)
+    
 
 def main():
     """
@@ -124,13 +133,16 @@ def main():
     """
     args = parse_arguments()
     
-    plan_path = generate_plan()
-    changed_resources = load_changed_resources(plan_path)
-    selected_resources = get_user_selection(changed_resources)
-    
-    apply_command = build_apply_command(selected_resources)
-    subprocess.run(apply_command, cwd=os.getcwd(), check=True)
-    cleanup_plan(plan_path)
+    if args.mode == "replace":
+        print("REPLACE_MODE")
+    elif args.mode == "target":
+        apply_with_targets()
+    else:
+        raise ValueError(f"Unknown mode: {args.mode}")
 
 if __name__ == "__main__":
     main()
+    
+# TODO: Make sure temp files get cleaned up, even if the script fails or the user cancels it
+# TODO: Abort in case nothing is selected
+# TODO: Add replace command
