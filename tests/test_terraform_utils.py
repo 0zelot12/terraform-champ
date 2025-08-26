@@ -1,4 +1,4 @@
-from target_champ.main import build_apply_command
+from target_champ.terraform_utils import build_apply_command
 
 def test_build_apply_command():
     # Test with empty list
