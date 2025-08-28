@@ -1,4 +1,4 @@
-# Target Champ
+# terraform-champ
 
 An interactive Terraform CLI wrapper that simplifies `terraform apply` commands with `-target` and `-replace`.
 
