@@ -1,4 +1,4 @@
-from terraform_champ.terraform_utils import build_apply_command
+from terraform_champ.terraform_utils import build_apply_command, contains_resource_change_actions
 
 
 def test_build_apply_command():
@@ -36,3 +36,9 @@ def test_build_apply_command():
         "-replace=aws_security_group.db",
     ]
     assert result == expected
+    
+def test_contains_resource_change_actions():
+    assert contains_resource_change_actions(["create"]) == True
+    assert contains_resource_change_actions(["update"]) == True
+    assert contains_resource_change_actions(["delete"]) == True
+    assert contains_resource_change_actions(["read"]) == False
