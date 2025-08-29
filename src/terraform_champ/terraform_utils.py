@@ -3,7 +3,7 @@ import subprocess
 import os
 import json
 
-def build_apply_command(resources):
+def build_apply_command(resources_to_target, resources_to_replace):
     """
     Builds a Terraform apply command targeting the specified resources.
     Args:
@@ -13,9 +13,14 @@ def build_apply_command(resources):
         list: Command list to execute with subprocess.
     """
     target_args = []
-    for resource in resources:
+    for resource in resources_to_target:
         target_args.append(f'-target={resource}')
-    return ["terraform", "apply"] + target_args
+        
+    replace_args = []
+    for resource in resources_to_replace:
+        replace_args.append(f'-replace={resource}')
+        
+    return ["terraform", "apply"] + target_args + replace_args
 
 def generate_plan():
     """
