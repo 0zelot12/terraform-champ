@@ -2,10 +2,11 @@ from terraform_champ.terraform_utils import (
     build_apply_command,
     contains_resource_change_actions,
     parse_changed_resources,
+    parse_resources,
 )
 
 
-def test_get_parse_changed_resources():
+def test_parse_changed_resources():
     with open("./tests/fixtures/test_plan.json", "r") as f:
         json_content = f.read()
 
@@ -16,6 +17,24 @@ def test_get_parse_changed_resources():
         "local_file.json_example",
         "local_file.txt_example_2",
         "local_file.txt_example_3",
+    ]
+    
+def test_parse_resources():
+    with open("./tests/fixtures/test_plan.json", "r") as f:
+        json_content = f.read()
+
+    resources = parse_resources(json_content)
+
+    assert resources == [
+        "docker_container.nginx",
+        "docker_image.nginx",
+        "local_file.json_example",
+        "local_file.txt_example",
+        "local_file.txt_example_2",
+        "local_file.txt_example_3",
+        "local_file.txt_example_4",
+        "local_file.txt_example_5",
+        "local_file.yaml_example"
     ]
 
 

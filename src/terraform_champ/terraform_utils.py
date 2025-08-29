@@ -61,3 +61,6 @@ def parse_changed_resources(raw_data):
         if contains_resource_change_actions(resource_change["change"]["actions"]):
             resources.append(resource_change["address"])
     return resources
+
+def parse_resources(raw_data):
+    return []
