@@ -54,7 +54,7 @@ def contains_resource_change_actions(actions):
     return any(action in actions for action in ["create", "update", "delete"])
 
 
-def get_changed_resources(raw_data):
+def parse_changed_resources(raw_data):
     data = json.loads(raw_data)
     resources = []
     for resource_change in data.get("resource_changes", []):

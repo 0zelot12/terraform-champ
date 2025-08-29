@@ -3,9 +3,11 @@
 import questionary
 import argparse
 
+
 from terraform_utils import (
-    generate_plan,
-    load_changed_resources,
+    terraform_plan,
+    terraform_show,
+    parse_changed_resources,
     build_apply_command,
     cleanup_plan,
     run_apply,
@@ -36,27 +38,20 @@ def parse_arguments():
 
 
 def apply_with_targets():
-    plan_path = generate_plan()
-    changed_resources = load_changed_resources(plan_path)
+    plan_path = terraform_plan()
+    plan_data = terraform_show(plan_path)
+    changed_resources = parse_changed_resources(plan_data)
     selected_resources = get_user_selection(changed_resources)
     apply_command = build_apply_command([selected_resources], [])
     run_apply(apply_command)
     cleanup_plan(plan_path)
 
 def apply_with_replacements():
-    plan_path = generate_plan()
-    resources = load_resources(plan_path)
-    selected_resources = get_user_selection(resources)
-    apply_command = build_apply_command([], [selected_resources])
-    run_apply(apply_command)
-    cleanup_plan(plan_path)
+    # TODO: Implement this function
+    pass
 
 def main():
-    """
-    Main function to handle the script's workflow.
-    """
     args = parse_arguments()
-
     if args.mode == "replace":
         print("REPLACE_MODE")
     elif args.mode == "target":
