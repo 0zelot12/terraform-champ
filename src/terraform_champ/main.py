@@ -13,13 +13,6 @@ from terraform_utils import (
 
 
 def get_user_selection(choices):
-    """
-    Prompts the user to select resources from a list of choices.
-    Args:
-        choices (list): List of resource addresses to choose from.
-    Returns:
-        list: List of selected resource addresses.
-    """
     selected = questionary.checkbox(
         "Select the resources you want to apply changes to:", choices=choices
     ).ask()
@@ -31,11 +24,6 @@ def get_user_selection(choices):
 
 
 def parse_arguments():
-    """
-    Parses command line arguments.
-    Returns:
-        argparse.Namespace: Parsed arguments.
-    """
     parser = argparse.ArgumentParser(
         description="Interactive Terraform apply with resource selection"
     )
@@ -51,10 +39,17 @@ def apply_with_targets():
     plan_path = generate_plan()
     changed_resources = load_changed_resources(plan_path)
     selected_resources = get_user_selection(changed_resources)
-    apply_command = build_apply_command(selected_resources)
+    apply_command = build_apply_command([selected_resources], [])
     run_apply(apply_command)
     cleanup_plan(plan_path)
 
+def apply_with_replacements():
+    plan_path = generate_plan()
+    resources = load_resources(plan_path)
+    selected_resources = get_user_selection(resources)
+    apply_command = build_apply_command([], [selected_resources])
+    run_apply(apply_command)
+    cleanup_plan(plan_path)
 
 def main():
     """
