@@ -89,4 +89,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
+
+# TODO: Add filtering for replace
+# TODO: Implement init
