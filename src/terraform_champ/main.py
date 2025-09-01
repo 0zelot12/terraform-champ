@@ -36,6 +36,11 @@ def parse_arguments():
         choices=["target", "replace"],
         help="Mode: 'target' for selective resource targeting, 'replace' for replace command",
     )
+    parser.add_argument(
+        "--filter",
+        type=str,
+        help="Optional substring filter for resource addresses, e.g. --filter='xyz'",
+    )
     return parser.parse_args()
 
 
@@ -59,11 +64,11 @@ def apply_with_targets():
     finally:
         cleanup_plan(plan_path)
 
-def apply_with_replacements():
+def apply_with_replacements(filter):
     try:
         plan_path = terraform_plan()
         plan_data = terraform_show(plan_path)
-        all_resources = parse_resources(plan_data)
+        all_resources = parse_resources(plan_data, filter=filter)
         selected_resources = get_user_selection(all_resources)
         if len(selected_resources) == 0:
             print("No resources selected...")
@@ -80,7 +85,7 @@ def apply_with_replacements():
 def main():
     args = parse_arguments()
     if args.mode == "replace":
-        apply_with_replacements()
+        apply_with_replacements(filter=args.filter)
     elif args.mode == "target":
         apply_with_targets()
     else:
