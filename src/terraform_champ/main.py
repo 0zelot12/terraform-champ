@@ -15,14 +15,15 @@ from terraform_utils import (
 
 
 def get_user_selection(choices):
-    # TODO: Handle when user aborts here
     selected = questionary.checkbox(
         "Select the resources you want to apply changes to:", choices=choices
     ).ask()
-
-    print("\n Running terraform apply targeting the following resources:")
-    for item in selected:
-        print(f"- {item}")
+    if selected is None:
+        return []
+    if len(selected) > 0:
+        print("\n Your selection:")
+        for item in selected:
+            print(f"- {item}")
     return selected
 
 
@@ -39,22 +40,42 @@ def parse_arguments():
 
 
 def apply_with_targets():
-    plan_path = terraform_plan()
-    plan_data = terraform_show(plan_path)
-    changed_resources = parse_resources(plan_data, changed_only=True)
-    selected_resources = get_user_selection(changed_resources)
-    apply_command = build_apply_command(selected_resources, [])
-    terraform_apply(apply_command)
-    cleanup_plan(plan_path)
+    try:
+        plan_path = terraform_plan()
+        plan_data = terraform_show(plan_path)
+        changed_resources = parse_resources(plan_data, changed_only=True)
+        if len(changed_resources) == 0:
+            print("No changes to apply detected...")
+            return
+        selected_resources = get_user_selection(changed_resources)
+        if len(selected_resources) == 0:
+            print("No resources selected...")
+            return
+        apply_command = build_apply_command(selected_resources, [])
+        terraform_apply(apply_command)
+    except Exception as e:
+        print(f"Error during apply_with_targets: {e}")
+        raise
+    finally:
+        cleanup_plan(plan_path)
 
 def apply_with_replacements():
-    plan_path = terraform_plan()
-    plan_data = terraform_show(plan_path)
-    all_resources = parse_resources(plan_data)
-    selected_resources = get_user_selection(all_resources)
-    apply_command = build_apply_command([], selected_resources)
-    terraform_apply(apply_command)
-    cleanup_plan(plan_path)
+    try:
+        plan_path = terraform_plan()
+        plan_data = terraform_show(plan_path)
+        all_resources = parse_resources(plan_data)
+        selected_resources = get_user_selection(all_resources)
+        if len(selected_resources) == 0:
+            print("No resources selected...")
+            return
+        apply_command = build_apply_command([], selected_resources)
+        terraform_apply(apply_command)
+    except Exception as e:
+        print(f"Error during apply_with_replacements: {e}")
+        raise
+    finally:
+        cleanup_plan(plan_path)
+    
 
 def main():
     args = parse_arguments()
@@ -68,6 +89,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# TODO: Make sure temp files get cleaned up, even if the script fails or the user cancels it
-# TODO: Abort in case nothing is selected
+    
