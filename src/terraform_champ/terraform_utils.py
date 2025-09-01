@@ -63,4 +63,8 @@ def parse_changed_resources(raw_data):
     return resources
 
 def parse_resources(raw_data):
-    return []
+    data = json.loads(raw_data)
+    resources = []
+    for resource_change in data.get("resource_changes", []):
+        resources.append(resource_change["address"])
+    return resources
