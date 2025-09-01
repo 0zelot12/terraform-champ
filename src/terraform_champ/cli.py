@@ -42,6 +42,7 @@ def apply_with_targets():
         
 
 def apply_with_replacements(filter):
+    plan_path = None
     try:
         plan_path = terraform_plan()
         

@@ -20,7 +20,7 @@ def terraform_apply(apply_command):
             apply_command, 
             cwd=os.getcwd(), 
             check=True,
-            capture_output=True,
+            capture_output=False,
             text=True
         )
         print("✅ Terraform apply completed successfully")
@@ -64,7 +64,7 @@ def terraform_init(path, upgrade=False):
             init_command, 
             cwd=path, 
             check=True,
-            capture_output=True,
+            capture_output=False,
             text=True
         )
         print(f"✅ Terraform init completed successfully in 📂 {path}")
@@ -157,7 +157,7 @@ def terraform_plan():
             ["terraform", "plan", f"-out={plan_path}"],
             cwd=os.getcwd(),
             check=True,
-            capture_output=True,
+            capture_output=False,
             text=True
         )
         print("✅ Terraform plan completed successfully")
