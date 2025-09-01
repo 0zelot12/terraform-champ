@@ -1,7 +1,6 @@
 from terraform_champ.terraform_utils import (
     build_apply_command,
     contains_resource_change_actions,
-    parse_changed_resources,
     parse_resources,
 )
 
@@ -10,7 +9,7 @@ def test_parse_changed_resources():
     with open("./tests/fixtures/test_plan.json", "r") as f:
         json_content = f.read()
 
-    changed_resources = parse_changed_resources(json_content)
+    changed_resources = parse_resources(json_content, changed_only=True)
 
     assert changed_resources == [
         "docker_container.nginx",
