@@ -24,9 +24,15 @@ After selection, `terraform apply` is executed, and you’ll be prompted to conf
 
 ---
 
-### `terraform-champ init`
+### `terraform-champ init` (TODO)
 
 Scans the project structure and runs `terraform init` in all detected directories.  
 By default, all paths are initialized, but you can exclude specific ones if needed.
 
 👉 Use the `--upgrade` flag to also update provider and module configurations.
+
+---
+
+### `terraform-champ batch-apply` (TODO)
+
+Scans the project structure and runs `terraform apply` in all selected directories.
