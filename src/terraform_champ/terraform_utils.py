@@ -8,6 +8,10 @@ def terraform_apply(apply_command):
     subprocess.run(apply_command, cwd=os.getcwd(), check=True)
     
     
+def terraform_init(path, upgrade=False):
+    subprocess.run(["terraform", "init"], cwd=path, check=True)
+    
+    
 def terraform_show(plan_path):
     result = subprocess.run(
         ["terraform", "show", "-json", plan_path],

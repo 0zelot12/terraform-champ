@@ -10,6 +10,7 @@ from terraform_utils import (
     terraform_plan,
     terraform_apply,
     terraform_show,
+    terraform_init,
     parse_resources,
     build_apply_command,
     cleanup_plan
@@ -93,6 +94,7 @@ def init():
         selected_paths = get_user_selection(main_tf_paths, "Select the paths you want to init:")
         for path in selected_paths:
             print(f"🚀 Running 'terraform init' in 📂 '{path}'")
+            terraform_init(path)
     except Exception as e:
         print(f"❌ Error during run_init: {e}")
         raise
