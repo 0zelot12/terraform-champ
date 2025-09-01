@@ -6,15 +6,16 @@ import argparse
 
 from terraform_utils import (
     terraform_plan,
+    terraform_apply,
     terraform_show,
-    parse_changed_resources,
+    parse_resources,
     build_apply_command,
-    cleanup_plan,
-    run_apply,
+    cleanup_plan
 )
 
 
 def get_user_selection(choices):
+    # TODO: Handle when user aborts here
     selected = questionary.checkbox(
         "Select the resources you want to apply changes to:", choices=choices
     ).ask()
@@ -40,20 +41,25 @@ def parse_arguments():
 def apply_with_targets():
     plan_path = terraform_plan()
     plan_data = terraform_show(plan_path)
-    changed_resources = parse_changed_resources(plan_data)
+    changed_resources = parse_resources(plan_data, changed_only=True)
     selected_resources = get_user_selection(changed_resources)
-    apply_command = build_apply_command([selected_resources], [])
-    run_apply(apply_command)
+    apply_command = build_apply_command(selected_resources, [])
+    terraform_apply(apply_command)
     cleanup_plan(plan_path)
 
 def apply_with_replacements():
-    # TODO: Implement this function
-    pass
+    plan_path = terraform_plan()
+    plan_data = terraform_show(plan_path)
+    all_resources = parse_resources(plan_data)
+    selected_resources = get_user_selection(all_resources)
+    apply_command = build_apply_command([], selected_resources)
+    terraform_apply(apply_command)
+    cleanup_plan(plan_path)
 
 def main():
     args = parse_arguments()
     if args.mode == "replace":
-        print("REPLACE_MODE")
+        apply_with_replacements()
     elif args.mode == "target":
         apply_with_targets()
     else:
@@ -65,4 +71,3 @@ if __name__ == "__main__":
 
 # TODO: Make sure temp files get cleaned up, even if the script fails or the user cancels it
 # TODO: Abort in case nothing is selected
-# TODO: Add replace command

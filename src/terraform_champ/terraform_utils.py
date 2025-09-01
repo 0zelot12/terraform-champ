@@ -33,10 +33,11 @@ def terraform_plan():
         
         
 def build_apply_command(resources_to_target, resources_to_replace):
-    return [
-        "terraform", 
-        "apply"
-    ] + [f"-target={r}" for r in resources_to_target] + [f"-replace={r}" for r in resources_to_replace]
+    return (
+        ["terraform", "apply"] +
+        [f"-target={r}" for r in resources_to_target] +
+        [f"-replace={r}" for r in resources_to_replace]
+    )
 
 
 def cleanup_plan(path):

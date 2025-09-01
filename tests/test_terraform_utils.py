@@ -5,7 +5,7 @@ from terraform_champ.terraform_utils import (
 )
 
 
-def test_parse_changed_resources():
+def test_parse_resources():
     with open("./tests/fixtures/test_plan.json", "r") as f:
         json_content = f.read()
 
@@ -18,12 +18,7 @@ def test_parse_changed_resources():
         "local_file.txt_example_3",
     ]
     
-def test_parse_resources():
-    with open("./tests/fixtures/test_plan.json", "r") as f:
-        json_content = f.read()
-
     resources = parse_resources(json_content)
-
     assert resources == [
         "docker_container.nginx",
         "docker_image.nginx",
@@ -35,7 +30,7 @@ def test_parse_resources():
         "local_file.txt_example_5",
         "local_file.yaml_example"
     ]
-
+    
 
 def test_build_apply_command():
     result = build_apply_command([], [])
