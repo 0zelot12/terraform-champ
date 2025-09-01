@@ -10,13 +10,21 @@ def test_parse_resources():
         json_content = f.read()
 
     changed_resources = parse_resources(json_content, changed_only=True)
-
     assert changed_resources == [
         "docker_container.nginx",
         "local_file.json_example",
         "local_file.txt_example_2",
-        "local_file.txt_example_3",
+        "local_file.txt_example_3"
     ]
+    
+    filtered_resources = parse_resources(json_content, filter="nginx")
+    assert filtered_resources == [
+        "docker_container.nginx",
+        "docker_image.nginx"
+    ]
+    
+    changed_and_filtered_resources = parse_resources(json_content, changed_only=True, filter="nginx")
+    assert changed_and_filtered_resources == ["docker_container.nginx"]
     
     resources = parse_resources(json_content)
     assert resources == [

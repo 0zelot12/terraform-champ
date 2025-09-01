@@ -50,10 +50,12 @@ def contains_resource_change_actions(actions):
     return any(action in actions for action in ["create", "update", "delete"])
 
 
-def parse_resources(raw_data, changed_only=False):
+def parse_resources(raw_data, changed_only=False, filter=None):
     data = json.loads(raw_data)
     resources = []
     for resource_change in data.get("resource_changes", []):
         if not changed_only or contains_resource_change_actions(resource_change["change"]["actions"]):
             resources.append(resource_change["address"])
+        if filter:
+            resources = [r for r in resources if filter in r]
     return resources
