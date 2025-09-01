@@ -31,19 +31,14 @@ def terraform_plan():
     except:
         print("Terraform plan failed, please check your configurations")
         
-
+        
 def build_apply_command(resources_to_target, resources_to_replace):
-    target_args = []
-    for resource in resources_to_target:
-        target_args.append(f'-target={resource}')
-        
-    replace_args = []
-    for resource in resources_to_replace:
-        replace_args.append(f'-replace={resource}')
-        
-    return ["terraform", "apply"] + target_args + replace_args
-        
-        
+    return [
+        "terraform", 
+        "apply"
+    ] + [f"-target={r}" for r in resources_to_target] + [f"-replace={r}" for r in resources_to_replace]
+
+
 def cleanup_plan(path):
     if os.path.exists(path):
         os.remove(path)
