@@ -1,8 +1,6 @@
 # terraform-champ
 
-An interactive Terraform CLI wrapper that simplifies certain terraform workflows.
-
-**Disclaimer:** Using `-target` with Terraform is generally discouraged. Only use it when necessary, and refer to the Terraform documentation for more details.
+An interactive Terraform CLI wrapper that simplifies terraform workflows.
 
 ## Features
 
