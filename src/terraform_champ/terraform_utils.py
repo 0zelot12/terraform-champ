@@ -9,7 +9,8 @@ def terraform_apply(apply_command):
     
     
 def terraform_init(path, upgrade=False):
-    subprocess.run(["terraform", "init"], cwd=path, check=True)
+    init_command = ["terraform", "init", "-upgrade=true"] if upgrade else ["terraform", "init"]
+    subprocess.run(init_command, cwd=path, check=True)
     
     
 def terraform_show(plan_path):
