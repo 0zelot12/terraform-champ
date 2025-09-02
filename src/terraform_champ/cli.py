@@ -44,6 +44,7 @@ def apply_with_targets():
 def apply_with_replacements(filter):
     plan_path = None
     try:
+        # TODO: Use terraform state list instead
         plan_path = terraform_plan()
         
         plan_data = terraform_show(plan_path)
