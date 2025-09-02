@@ -2,7 +2,24 @@ from terraform_champ.terraform_utils import (
     build_apply_command,
     contains_resource_change_actions,
     parse_resources,
+    parse_resources_from_str
 )
+
+
+def test_parse_resources_from_str():
+    resources_string = """
+    aws_instance.foo
+    aws_instance.bar[0]
+    aws_instance.bar[1]
+    module.elb.aws_elb.main
+    """
+    
+    assert parse_resources_from_str(resources_string) == [
+        "aws_instance.foo",
+        "aws_instance.bar[0]",
+        "aws_instance.bar[1]",
+        "module.elb.aws_elb.main"
+    ]
 
 
 def test_parse_resources():

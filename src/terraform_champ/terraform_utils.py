@@ -191,7 +191,46 @@ def terraform_plan():
             pass
         print(f"❌ Unexpected error during terraform plan: {e}")
         sys.exit(1)
+
+
+def terraform_state_list():
+    """
+    Run terraform sate list to get a list of resources present in the current state.
         
+    Returns:
+        str: String output from terraform state list
+        
+    Raises:
+        SystemExit: If terraform state list fails
+    """
+    try:
+        print("🔄 Running terraform state list...")
+        result = subprocess.run(
+            ["terraform", "state", "list"],
+            cwd=os.getcwd(),
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        print("✅ Terraform state list completed successfully")
+        return result.stdout
+    
+    except subprocess.CalledProcessError as e:
+        print("❌ Terraform state list failed!")
+        print(f"Exit code: {e.returncode}")
+        if e.stdout:
+            print(e.stdout)
+        if e.stderr:
+            print(e.stderr)
+        sys.exit(1)
+        
+    except FileNotFoundError:
+        print("❌ Terraform command not found. Please ensure Terraform is installed and in your PATH.")
+        sys.exit(1)
+        
+    except Exception as e:
+        print(f"❌ Unexpected error during terraform state list: {e}")
+        sys.exit(1)
         
 def build_apply_command(resources_to_target, resources_to_replace):
     return (
@@ -211,8 +250,15 @@ def contains_resource_change_actions(actions):
     return any(action in actions for action in ["create", "update", "delete"])
 
 
-def parse_resources(raw_data, changed_only=False, filter=None):
-    data = json.loads(raw_data)
+def parse_resources_from_str(data: str, filter=None) -> list[str]:
+    resources = [line.strip() for line in data.splitlines() if line.strip()]
+    if filter:
+        resources = [r for r in resources if filter in r]
+    return resources
+
+
+def parse_resources(data, changed_only=False, filter=None):
+    data = json.loads(data)
     resources = []
     for resource_change in data.get("resource_changes", []):
         if not changed_only or contains_resource_change_actions(resource_change["change"]["actions"]):

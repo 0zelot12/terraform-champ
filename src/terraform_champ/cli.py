@@ -8,7 +8,9 @@ from .terraform_utils import (
     terraform_apply,
     terraform_show,
     terraform_init,
+    terraform_state_list,
     parse_resources,
+    parse_resources_from_str,
     build_apply_command,
     cleanup_plan
 )
@@ -42,13 +44,9 @@ def apply_with_targets():
         
 
 def apply_with_replacements(filter):
-    plan_path = None
     try:
-        # TODO: Use terraform state list instead
-        plan_path = terraform_plan()
-        
-        plan_data = terraform_show(plan_path)
-        all_resources = parse_resources(plan_data, filter=filter)
+        resource_data = terraform_state_list()
+        all_resources = parse_resources_from_str(resource_data, filter=filter)
         
         selected_resources = get_user_selection(all_resources, "Select the resources you want to replace:")
         if len(selected_resources) == 0:
@@ -61,9 +59,6 @@ def apply_with_replacements(filter):
     except Exception as e:
         print(f"❌ Error during apply_with_replacements: {e}")
         raise
-    finally:
-        if plan_path:
-            cleanup_plan(plan_path)
         
 def init(upgrade=False):
     try:
