@@ -64,6 +64,7 @@ def init(upgrade=False):
     try:
         main_tf_paths = find_main_tf_files(
             start_path=os.getcwd(),
+            # TODO: Control this via environment variable
             excluded_dirs={"management", "performance-testing-cluster"}
         )
         selected_paths = get_user_selection(main_tf_paths, "Select the paths you want to init:")
