@@ -33,6 +33,7 @@ def apply(interactive=False, dry_run=False):
         for path in selected_paths:
             apply_command = ["terraform", "apply"]
             terraform_apply(apply_command, path=path, dry_run=dry_run)
+            # TODO: Add possibility to use this with replace/target
     except Exception as e:
         print(f"❌ Error during run_init: {e}")
         raise
