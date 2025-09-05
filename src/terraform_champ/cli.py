@@ -15,6 +15,29 @@ from .terraform_utils import (
     cleanup_plan
 )
 
+
+def apply(interactive=False, dry_run=False):
+    try:
+        main_tf_paths = find_main_tf_files(
+            start_path=os.getcwd(),
+            # TODO: Control this via environment variable
+            excluded_dirs={"management", "performance-testing-cluster"}
+        )
+        if len(main_tf_paths) == 0:
+            print("⚠️ No terraform configuration files found. Make sure you're running this command from a directory that contains main.tf files")
+            return
+        selected_paths = get_user_selection(main_tf_paths, "Select the paths you want to apply:") if interactive else main_tf_paths
+        if len(selected_paths) == 0:
+            print("⚠️ No paths selected...")
+            return
+        for path in selected_paths:
+            apply_command = ["terraform", "apply"]
+            terraform_apply(apply_command, path=path, dry_run=dry_run)
+    except Exception as e:
+        print(f"❌ Error during run_init: {e}")
+        raise
+
+
 def apply_with_targets():
     plan_path = None
     try:

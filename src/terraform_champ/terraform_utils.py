@@ -4,26 +4,44 @@ import os
 import json
 import sys
 
-def terraform_apply(apply_command):
+def terraform_apply(apply_command, dry_run=False, path=None):
     """
     Run terraform apply with the given command.
     
     Args:
-        apply_command (list): The terraform apply command as a list of strings
+        apply_command (list[str]): The Terraform command to execute, provided
+            as a list of strings (e.g., `['terraform', 'apply', '-auto-approve']`).
+        dry_run (bool, optional): If True, prints the command and path that
+            would be executed without running it. Defaults to False.
+        path (str | None, optional): The file system path where the command
+            should be run. If None, it defaults to the current working
+            directory. Defaults to None.
         
     Raises:
         SystemExit: If terraform apply fails
     """
     try:
         print(f"🚀 Running: {' '.join(apply_command)}")
+        
+        path = os.getcwd() if path is None else path
+        print(f"📂 Path to run: {path}")
+        
+        if dry_run:
+            print(f"⚠️ Dry run enabled, no changes will be applied.")
+            return
+
         result = subprocess.run(
             apply_command, 
-            cwd=os.getcwd(), 
+            cwd=path, 
             check=True,
             capture_output=False,
             text=True
         )
+        
+        # TODO: Handle case when user does not accept one of many commands
+        
         print("✅ Terraform apply completed successfully")
+        
         if result.stdout:
             print(result.stdout)
             

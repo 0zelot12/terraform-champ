@@ -3,7 +3,7 @@
 import argparse
 
 
-from terraform_champ.cli import apply_with_replacements, apply_with_targets, init
+from terraform_champ.cli import apply_with_replacements, apply_with_targets, init, apply
 
 
 def parse_arguments():
@@ -46,6 +46,24 @@ def parse_arguments():
             action="store_true",
             help="Upgrade modules and plugins during terraform init ⬆️"
         )
+    
+    # Apply subcommand
+    apply_parser = subparsers.add_parser(
+        "apply",
+        help="Run 'terraform apply' in all relevant directories ⚡"
+    )
+    
+    apply_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="TODO"
+    )
+    
+    apply_parser.add_argument(
+        "--interactive",
+        action="store_true",
+        help="TODO"
+    )
 
     return parser.parse_args()
     
@@ -58,6 +76,8 @@ def main():
         apply_with_targets()
     elif args.mode == "init":
         init(upgrade=args.upgrade)
+    elif args.mode == "apply":
+        apply(interactive=args.interactive, dry_run=args.dry_run)
     else:
         raise ValueError(f"Unknown mode: {args.mode}")
 
