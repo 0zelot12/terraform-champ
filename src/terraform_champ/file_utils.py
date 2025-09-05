@@ -3,6 +3,7 @@ import os
 
 def get_excluded_directories():
     # TODO: Add error handling
+    # TODO: Is there a way to do this on a project level rather than setting it globally?
     excluded_dirs_str = os.environ.get('TFCHAMP_EXCLUDED_DIRS')
     if excluded_dirs_str:
         print(f"⚙️ TFCHAMP_EXCLUDED_DIRS: {excluded_dirs_str}")
