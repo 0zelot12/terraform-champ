@@ -18,11 +18,7 @@ from .terraform_utils import (
 
 def apply(interactive=False, dry_run=False):
     try:
-        main_tf_paths = find_main_tf_files(
-            start_path=os.getcwd(),
-            # TODO: Control this via environment variable
-            excluded_dirs={"management", "performance-testing-cluster"}
-        )
+        main_tf_paths = find_main_tf_files(start_path=os.getcwd())
         if len(main_tf_paths) == 0:
             print("⚠️ No terraform configuration files found. Make sure you're running this command from a directory that contains main.tf files")
             return
@@ -86,11 +82,7 @@ def apply_with_replacements(filter):
         
 def init(upgrade=False):
     try:
-        main_tf_paths = find_main_tf_files(
-            start_path=os.getcwd(),
-            # TODO: Control this via environment variable
-            excluded_dirs={"management", "performance-testing-cluster"}
-        )
+        main_tf_paths = find_main_tf_files(start_path=os.getcwd())
         selected_paths = get_user_selection(main_tf_paths, "Select the paths you want to init:")
         if len(selected_paths) == 0:
             print("⚠️ No paths selected...")

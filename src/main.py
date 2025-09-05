@@ -80,6 +80,9 @@ def main():
         apply(interactive=args.interactive, dry_run=args.dry_run)
     else:
         raise ValueError(f"Unknown mode: {args.mode}")
+    
+    
+# TODO: Add proper logger with log levels
 
 
 if __name__ == "__main__":
