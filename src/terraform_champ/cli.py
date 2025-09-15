@@ -38,6 +38,7 @@ def apply(interactive=False, dry_run=False):
 def apply_with_targets():
     plan_path = None
     try:
+        # Add posibility to use state list instead of plan for shorter waiting times
         plan_path = terraform_plan()
         
         plan_data = terraform_show(plan_path)
